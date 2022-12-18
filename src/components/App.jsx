@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 import { Section } from './Section/Section';
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { Statictics } from './Statistics/Statistics';
+import { Notification } from './Notification/Notification';
 
 export class App extends Component {
   state = {
@@ -17,37 +20,48 @@ export class App extends Component {
   };
 
   countPositiveFeedbackPercentage = () => {
-    const { good, bad, neutral } = this.state;
-    const totalFeedback = good + bad + neutral;
+    const { good } = this.state;
+    const totalFeedback = this.countTotalFeedback();
+
+    if (!totalFeedback) return;
+
     return Math.round((good / totalFeedback) * 100);
   };
 
-  onLeaveFeedback = e => {};
+  onLeaveFeedback = option => {
+    this.setState(prevState => {
+      return { [option]: prevState[option] + 1 };
+    });
+  };
 
   render() {
+    const { good, bad, neutral } = this.state;
+
+    const total = this.countTotalFeedback();
+    const positivePercent = this.countPositiveFeedbackPercentage();
+
     return (
-      <Section title="Please leave feedback">
-        {/* <FeedbackOptions options={ } onLeaveFeedback={ }></FeedbackOptions> */}
-        {/* <Statistics good={ } neutral={ } bad={ } total={ } positivePercentage={ }>
-      </Statistics> */}
-      </Section>
+      <>
+        <Section title="Please leave feedback">
+          <FeedbackOptions
+            options={Object.keys(this.state)}
+            onLeaveFeedback={this.onLeaveFeedback}
+          ></FeedbackOptions>
+        </Section>
+        <Section title="Statistics">
+          {total ? (
+            <Statictics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={total}
+              positivePercentage={positivePercent}
+            />
+          ) : (
+            <Notification message="Unfortunately, there is no feedback" />
+          )}
+        </Section>
+      </>
     );
   }
 }
-
-// export const App = () => {
-//   return (
-//     <div
-//       style={{
-//         height: '100vh',
-//         display: 'flex',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         fontSize: 40,
-//         color: '#010101',
-//       }}
-//     >
-//       React homework template
-//     </div>
-//   );
-// };
