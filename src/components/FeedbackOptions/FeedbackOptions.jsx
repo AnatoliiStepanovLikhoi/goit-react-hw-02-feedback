@@ -1,16 +1,19 @@
 import PropTypes from 'prop-types';
 
+import styles from './FeedbackOptions.module.css';
+
 export const FeedbackOptions = ({ options, onLeaveFeedback }) => {
   return (
-    <div>
+    <div className={styles.feedbackContainer}>
       {options.map(option => {
         return (
           <button
             key={option}
             onClick={() => onLeaveFeedback(option)}
             name={option}
+            className={styles.feedBackButton}
           >
-            {option}
+            {option[0].toUpperCase() + option.slice(1)}
           </button>
         );
       })}
